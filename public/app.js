@@ -19,7 +19,7 @@ function stripAnchorTags(abstracts) {
     }
 }
 
-// TODO: this works only part of the time.
+// TODO: this works only part of the time.  
 //       For example, it fails on the article
 //       "Popular Mac Developer Slams Apple for 'Sad State of Macintosh Hardware"
 
@@ -59,26 +59,8 @@ console.log("Summary:"); console.log(beginning);  // TWH DEBUG
     }  
 }
 
-/*
-// Click handler for any of the topic lines (class="headline")
-$(document).on("click", "h4", function() {
-    // Save the Article ObjectId from the <h4> tag
-    var thisId = $(this).attr("data-id");
-
-    // get the article from the database by requesting it through
-    // the appropriate route
-    $.ajax({
-        method: "GET",
-        url: "/getarticles/" + thisId
-    })
-      .then(function(data) {
-          console.log(data);  //TWH DEBUG
-
-      });
-});
-*/
-
 module.exports = {
   stripAnchorTags,
   createSummaries  
 }
+

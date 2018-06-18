@@ -51,6 +51,9 @@ process.on('unhandledRejection', (reason, p) => {
   // application specific logging throwing an error or other logic here
 });
 
+// [TODO: refactor by moving a lot of the processing logic
+//        out of this main server file]
+
 // A GET route for scraping the MacRumors website
 app.get("/scrapearticles", function(req, res) {
     // First, we grab the body of the html with axios
@@ -116,6 +119,24 @@ app.get("/getarticles/:id", function(req, res) {
     });
 });
 
+// route for adding a new comment to the database
+app.post("/addcomment", function(req, res) {
+  // [TODO: there is some redundancy in this code -- future refactor]
+
+  // Using the id passed in the articleid parameter, find the article 
+  // that was commented on in the database.
+  db.Article.findOne({ _id: req.body.articleid })
+    // and populate all of the previous associated comments
+    .populate("comments")
+    .then(function(dbArticle) {
+      addIfUserValidated(req, res, dbArticle);
+    })
+    .catch(function(err) {
+      // report any error to the client
+      res.json(err);
+    });
+});
+
 // check for the existence of this title and url before inserting
 function insertIfNotFound(db, object) {
   db.Article.findOne(
@@ -143,6 +164,93 @@ function insertIfNotFound(db, object) {
     });
 }
 
+// Add a new comment, either if the author is new,
+// or if the author is an existing user who has supplied
+// the correct password
+// [TODO: in the future, make user registration separate
+//        from comment entry.
+//        Also, store passwords more securely by encrypting
+//        them.]
+
+function addIfUserValidated(req, res, dbArticle) {
+  db.User.findOne( { username: req.body.authoredby },
+      function(err, doc) {
+        if (doc === null) {
+          // This the first time that the author has submitted
+          // a comment -- add him or her as a contributor
+          var newDoc = {};
+          newDoc.username = req.body.authoredby;
+          newDoc.password = req.body.password;
+          newDoc.email    = req.body.email;
+
+          db.User.create(newDoc)
+            .then(function(dbUser) {
+              console.log("New user is:"); console.log(dbUser);   // TWH DEBUG
+              // Now, add the comment
+              addCommentToArticle(req, res, dbArticle);
+            })
+            .catch(function(err) {
+              // If an error occurred, send it to the client
+              return res.json(err);
+            });
+        } else {
+            // The author is an existing user; match the supplied password
+            // against the one in the database
+            if (req.params.password !== doc.password) {
+              // The supplied password is incorrect -- report an error to
+              // the user (client browser)
+
+            }
+
+            addCommentToArticle(req, res, dbArticle);
+        }
+      })
+}
+
+function addCommentToArticle(req, res, dbArticle) {
+
+  // First add the comment so that we can get an ObjectId
+  // Then add the newly-assigned ObjectId to the head of the
+  // list of comments for the article so that the most recent
+  // comments appear first.
+  // Finally, rewrite the updated Article document to the database
+
+  var newDoc = {};
+  newDoc.authoredby   = req.body.authoredby;
+  newDoc.commenttitle = req.body.commenttitle;
+  newDoc.authoredon   = req.body.authoredon;
+  newDoc.body         = req.body.body;
+  newDoc.articleid    = req.body.articleid;
+
+  db.Comment.create(newDoc)
+    .then(function(dbComment) {
+      console.log('New comment is:'); console.log(dbComment);   // TWH DEBUG
+
+      // link the new Comment to its Article --
+      // get the Comment's ObjectId
+      const newCommentId = dbComment._id;
+      dbArticle.comments.unshift(newCommentId);
+      const updatedArray = dbArticle.comments;
+
+console.log("newCommentId:"); console.log(newCommentId);  //TWH DEBUG
+console.log("dbArticle.comments:"); console.log(dbArticle.comments);  //TWH DEBUG
+console.log("updatedArray:"); console.log(updatedArray);  //TWH DEBUG
+
+      db.Article.update( { _id: newDoc.articleid }, 
+                         {  $set: { comments: updatedArray } },
+                         function(err, numAffected, rawResponse) {
+                           console.log('Back from Article update');                 // TWH DEBUG
+                           console.log("err:"); console.log(err);                   // TWH DEBUG
+                           console.log("numAffected:"); console.log(numAffected);   // TWH DEBUG
+                           console.log("rawResponse:"); console.log(rawResponse);   // TWH DEBUG
+                         });
+    })
+    .catch(function(err) {
+      // If an error occurred, send it to the client
+      console.log(err);
+      return res.json(err); 
+    });
+}
 
 // Start the server
 app.listen(PORT, function() {

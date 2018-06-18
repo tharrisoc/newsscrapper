@@ -1,3 +1,5 @@
+"use strict";
+
 const mongoose = require("mongoose");
 
 // Save a reference to the Schema constructor

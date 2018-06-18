@@ -1,3 +1,5 @@
+"use strict";
+
 const mongoose = require("mongoose");
 
 // Save a reference to the Schema constructor
@@ -5,20 +7,22 @@ const Schema = mongoose.Schema;
 
 // Using the Schema constructor, create a new CommentSchema object
 const CommentSchema = new Schema({
-  // `user` is of type String and is required
-  user: {
+  // `authoredby` is of type String and is required
+  authoredby: {
       type: String,
-      required: true
+      required: true,
+      trim: true
   },
 
-  // `title` is of type String and is required
-  title: {
+  // `commenttitle` is of type String and is required
+  commenttitle: {
     type: String, 
-    required: true
+    required: true,
+    trim: true
   },
 
-  // `authored` is of type Date
-  authored: {
+  // `authoredon` is of type Date
+  authoredon: {
     type: Date,
     default: Date.now
   },
@@ -26,7 +30,8 @@ const CommentSchema = new Schema({
   // `body` is of type String and is required
   body: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
 
   // `articleid` is of type Schema.Types.ObjectId and is required

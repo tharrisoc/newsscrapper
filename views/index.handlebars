@@ -1,12 +1,80 @@
 <h3>MacRumors Articles with Reader Comments</h3>
 
-<ul>
-  {{#each papers}}
-    <li>
+<p>Click on a headline to add a comment</p>
+
+<div id="articlelist>
+  <a href="#articlesstart" name="articlesstart"></a>
+  <ul>
+    {{#each papers}}
+      <li>
         <h4 class="headline" data-id="{{this._id}}">{{this.title}}</h4>
         <em class="byline">{{this.byline}}</em><br />
 <!--    <p class="summary">{{this.summary}}</p>  needs debugging  -->
         <strong class="location">{{this.url}}</strong><br />
-    </li>
-  {{/each}}
-</ul>
+      </li>
+    {{/each}}
+  </ul>
+  <a href="#articlesend" name="articlesend"></a>
+</div>
+
+<div id="commentdiv">
+  <a href="#formstart" name="formstart"></a>
+  <form id="commentform" method="POST">
+    <fieldset>
+        <legend>Comment Entry Form</legend>
+        <label for="articletitle">Article Title:</label>
+        <input type="text" name="articletitle" id="articletitle" size="80" readonly="readonly" disabled="disabled" />
+    </fieldset>
+
+    <fieldset>
+        <label for="articleid">Article ID:</label>
+        <input type="text" name="articleid" id="articleid" size="28" readonly="readonly" disabled="disabled" />
+    </fieldset>
+
+    <fieldset>
+        <label for="username">Your name:</label>
+        <input type="text" name="username" id="username" size="20" />
+    </fieldset>
+
+    <fieldset>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" size="16" />
+    </fieldset>
+
+    <fieldset>
+        <label for="email">e-mail address:</label>
+        <input type="text" name="email" id="email" size="32" />
+    </fieldset>
+
+    <fieldset>
+        <label for="commenttitle">Comment Title:</label>
+        <input type="text" name="commenttitle" id="commenttitle" size="80" />
+    </fieldset>
+
+    <fieldset>
+        <label for="newcomment">Please enter your comment here:</label>
+        <textarea name="newcomment" id="newcomment" cols="80" rows="20"></textarea>
+    </fieldset>
+
+    <fieldset>
+        <label for="addcomment">Click here to add your comment:</label>
+        <button type="button" name="addcomment" id="addcomment"  data-id="">Add<br />Comment</button>
+    </fieldset>
+  </form>
+  <a href="#formend" name="formend"></a>
+</div>
+
+<div id="pastcomments">
+  <a href="#commentsstart" name="commentsstart"></a>
+  <ul>
+    {{#each pastcomments}}
+      <li>
+        <span class="authoredon">Authored On: {{this.authoredon}}</span>
+        <span class="authoredby">Authored By: {{this.authoredby}}</span>
+        <p class="commenttitle">Title: {{this.title}}</p>
+        <p class="commentbody">{{this.body}}</p>
+      </li>
+    {{/each}}
+  </ul>
+  <a href="#commentsend" name="commentsend"></a>
+</div>
