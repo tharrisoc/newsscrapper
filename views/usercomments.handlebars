@@ -1,0 +1,24 @@
+<h3>Selected MacRumors Article with Reader Comments</h3>
+
+<div id="pastcomments">
+  <a href="#commentsstart" name="commentsstart"></a>
+  
+  <h4 class="headline">{{articleTitle}}</h4>
+  <em class="byline">{{articleByline}}</em><br />
+<!-- <p class="summary">{{articleSummary}}</p>  needs debugging  -->
+  <strong class="location">{{articleURL}}</strong><br />
+
+<p>Comments</p>
+
+  <ul>
+    {{#each pastcomments}}
+      <li>
+        <span class="authoredon"><b>Authored On:</b> {{this.authoredon}}</span>
+        <span class="authoredby"><b> By:</b> {{this.authoredby}}</span>
+        <p class="commenttitle"><b>Title:</b> {{this.title}}</p>
+        <p class="commentbody">{{this.body}}</p>
+      </li>
+    {{/each}}
+  </ul>
+  <a href="#commentsend" name="commentsend"></a>
+</div>

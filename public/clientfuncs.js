@@ -13,12 +13,10 @@ function readyFunc() {
     // the appropriate route
     $.ajax({
         method: "GET",
-        url: "/getarticles/" + thisId
+        url: "/commentform/" + thisId
     })
     .then(function(data) {
         console.log(data);  //TWH DEBUG
-        // get a handle to the form
-        let theForm = $("commentform");
 
         // fill in the Title and ObjectId
         $('input[name="articletitle"]').val(data.title);
@@ -36,6 +34,24 @@ function readyFunc() {
         scrollToAnchor('formstart');
     });
   });
+
+  // Click handler for any of the "View comments" anchor tags
+  $(document).on( "click", "a.commentslink", function() {
+    // Save the Article ObjectId from the <a> tag
+    var thisId = $(this).attr("data-id");
+console.log('In on( "click", ".commentslink, ... '); console.log(thisId);   // TWH DEBUG  
+    // get the article from the database by requesting it through
+    // the appropriate route
+    $.ajax({
+      method: "GET",
+      url: "/getarticle/" + thisId
+    })
+    .then(function(data) {
+console.log("Returned from /getarticle/:id"); console.log(data);  // TWH DEBUG
+    });
+  
+  });
+
 
   // Click handler for the Add Comment Button
   $(document).on("click", "#addcomment", function() {
@@ -62,17 +78,19 @@ function readyFunc() {
       function(data) {
         // upon success, notify the user
         console.log(data);   // TWH DEBUG
-        alert(JSON.stringify(data, undefined, 2));
+//      alert(JSON.stringify(data, undefined, 2));
 
+console.log("Clearing fields on form");
         // clear out the fields on the form to prepare for the
         // next comment, and to prevent duplications
-        $('#articletitle').val("");
-        $('#articleid').val("");
-        $('#username').val("");
-        $('#password').val("");
-        $('#email').val("");
-        $('#commenttitle').val("");
-        $('#newcomment').val("");
+        $('input[name="articletitle"]').val("");
+        $('input=[name="articleid"]').val("");
+        $('input=[name="articleid"]').val("");
+        $('input[name="username"]').val("");
+        $('input[name="password"]').val("");
+        $('input[name="email"]').val("");
+        $('input[name="commenttitle"]').val("");
+        $('textarea[name="newcomment"]').val("");
         $('#addcomment').attr('data-id', "");
 
 /*       [TODO: find and fix this bug]
@@ -89,8 +107,9 @@ Uncaught TypeError: Cannot read property 'top' of undefined
         // scrollToAnchor('articlesstart');
       },
       function(err) {
+        console.log(err);
         // If an error occurred, also notify the user
-        alert(JSON.stringify(err, undefined, 2));
+//      alert(JSON.stringify(err, undefined, 2));
       })
   });
 }

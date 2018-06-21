@@ -1,4 +1,4 @@
-<h3>MacRumors Articles with Reader Comments</h3>
+<h3>All MacRumors Articles</h3>
 
 <p>Click on a headline to add a comment</p>
 
@@ -11,6 +11,7 @@
         <em class="byline">{{this.byline}}</em><br />
 <!--    <p class="summary">{{this.summary}}</p>  needs debugging  -->
         <strong class="location">{{this.url}}</strong><br />
+        <a data-id="{{this._id}}" class="commentslink" href="">View comments</a>
       </li>
     {{/each}}
   </ul>
@@ -62,19 +63,4 @@
     </fieldset>
   </form>
   <a href="#formend" name="formend"></a>
-</div>
-
-<div id="pastcomments">
-  <a href="#commentsstart" name="commentsstart"></a>
-  <ul>
-    {{#each pastcomments}}
-      <li>
-        <span class="authoredon">Authored On: {{this.authoredon}}</span>
-        <span class="authoredby">Authored By: {{this.authoredby}}</span>
-        <p class="commenttitle">Title: {{this.title}}</p>
-        <p class="commentbody">{{this.body}}</p>
-      </li>
-    {{/each}}
-  </ul>
-  <a href="#commentsend" name="commentsend"></a>
 </div>

@@ -7,15 +7,35 @@
 // Friday June 15, 2018 11:45 am PDT by Juli Clover
 
 function stripAnchorTags(abstracts) {
-    const numAbstracts = abstracts.length;
+    let numAbstracts = 0;
+    let wasArray = true;
+
+    if (Array.isArray(abstracts)) {
+      numAbstracts = abstracts.length;
+    } else {
+      numAbstracts = 1;
+      wasArray = false;
+    }
+
     let regex1 = /<a[^>]+>/;
     let regex2 = /<\/a>/;
   
     for (let i = 0; i < numAbstracts; i++) {
-      let byline = abstracts[i].byline;
+      let byline = null;
+      if (wasArray) {
+        byline = abstracts[i].byline;
+      } else {
+        byline = abstracts.byline;
+      }
+
       byline = byline.replace(regex1, "");
       byline = byline.replace(regex2, "");
-      abstracts[i].byline = byline;
+
+      if (wasArray) {
+        abstracts[i].byline = byline;
+      } else {
+        abstracts.byline = byline;
+      }
     }
 }
 

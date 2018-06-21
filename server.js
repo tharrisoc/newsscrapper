@@ -102,14 +102,18 @@ app.get("/getarticles", function(req, res) {
     });
 });
 
-// Route for getting a specific article based on ObjectId
-app.get("/getarticles/:id", function(req, res) {
+// Route for getting a specific article from the database for purposes
+// of adding a comment to that article, based on the ObjectId of the article
+app.get("/commentform/:id", function(req, res) {
   // Using the id passed in the id parameter, find the matching 
   // article in the database.
   db.Article.findOne({ _id: req.params.id })
     // and populate all of the associated comments
-    .populate("comments")
     .then(function(dbArticle) {
+      console.log('In "/commentform/:id", '); console.log(dbArticle);   // TWH DEBUG
+      utilFuncs.stripAnchorTags(dbArticle);
+//    utilFuncs.createSummaries(dbArticle);  NEEDS DEBUGGING
+
       // send article back to client upon success
       res.json(dbArticle);
     })
@@ -118,6 +122,50 @@ app.get("/getarticles/:id", function(req, res) {
       res.json(err);
     });
 });
+
+// Route for getting a specific article and its comments from the
+// database for purposes of displaying those comments, based on
+// the ObjectId of the article
+app.get("/getarticle/:id", function(req, res) {
+  // Using the id passed in the id parameter, find the matching 
+  // article in the database.
+  db.Article.findOne({ _id: req.params.id })
+    // and populate all of the associated comments
+    .populate("comments")
+    .then(function(dbArticle) {
+      utilFuncs.stripAnchorTags(dbArticle);
+//    utilFuncs.createSummaries(dbArticle);  NEEDS DEBUGGING
+
+      // send the list of comments to the client
+      const comments = dbArticle.comments;
+      let articlecomments = [];
+
+      comments.forEach(
+         function(element) {
+           let comment = { authoredon: element.authoredon,
+                           authoredby: element.authoredby,
+                           title:      element.commenttitle,
+                           body:       element.body 
+                         };
+           articlecomments.push(comment);
+      });
+
+      const parameters = {
+        articleTitle: dbArticle.title,
+        articleByline: dbArticle.byline,
+        articleURL: dbArticle.url,
+   //   articleSummary: dbArticle.summary,
+        pastcomments: articlecomments
+      };
+
+      res.render( "usercomments", parameters );
+    })
+    .catch(function(err) {
+      // report any error to the client as well
+      res.json(err);
+    });
+});
+
 
 // route for adding a new comment to the database
 app.post("/addcomment", function(req, res) {
