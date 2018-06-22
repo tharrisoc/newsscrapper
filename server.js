@@ -291,6 +291,7 @@ console.log("updatedArray:"); console.log(updatedArray);  //TWH DEBUG
                            console.log("err:"); console.log(err);                   // TWH DEBUG
                            console.log("numAffected:"); console.log(numAffected);   // TWH DEBUG
                            console.log("rawResponse:"); console.log(rawResponse);   // TWH DEBUG
+                           return res.send('New Comment created');
                          });
     })
     .catch(function(err) {

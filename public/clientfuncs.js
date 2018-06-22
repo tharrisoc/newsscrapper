@@ -77,23 +77,20 @@ console.log("Returned from /getarticle/:id"); console.log(data);  // TWH DEBUG
     .then(
       function(data) {
         // upon success, notify the user
-        console.log(data);   // TWH DEBUG
 //      alert(JSON.stringify(data, undefined, 2));
 
-console.log("Clearing fields on form");
         // clear out the fields on the form to prepare for the
         // next comment, and to prevent duplications
-        $('input[name="articletitle"]').val("");
-        $('input=[name="articleid"]').val("");
-        $('input=[name="articleid"]').val("");
-        $('input[name="username"]').val("");
-        $('input[name="password"]').val("");
-        $('input[name="email"]').val("");
-        $('input[name="commenttitle"]').val("");
-        $('textarea[name="newcomment"]').val("");
+        $('#articletitle').val("");
+        $('#articleid').val("");
+        $('#username').val("");
+        $('#password').val("");
+        $('#email').val("");
+        $('#commenttitle').val("");
+        $('#newcomment').val("");
         $('#addcomment').attr('data-id', "");
 
-/*       [TODO: find and fix this bug]
+/* [TODO: find and fix this bug] 
 Uncaught TypeError: Cannot read property 'top' of undefined
     at scrollToAnchor (clientfuncs.js:90)
     at Object.<anonymous> (clientfuncs.js:79)
@@ -103,18 +100,30 @@ Uncaught TypeError: Cannot read property 'top' of undefined
     at done (jquery.js:9275)
     at XMLHttpRequest.callback (jquery.js:9685)
 */
+
+/*
+jQuery.Deferred exception: Cannot read property 'top' of undefined
+TypeError: Cannot read property 'top' of undefined
+    at scrollToAnchor (http://localhost:3000/clientfuncs.js:117:50)
+    at Object.<anonymous> (http://localhost:3000/clientfuncs.js:104:9)
+    at l (https://code.jquery.com/jquery-3.3.1.min.js:2:29375)
+    at c (https://code.jquery.com/jquery-3.3.1.min.js:2:29677) undefined
+*/
         // scroll to the top of the list of articles
-        // scrollToAnchor('articlesstart');
+        scrollToAnchor('articlesstart');
       },
       function(err) {
-        console.log(err);
+        console.log("ERROR after ajax POST /addcomment"); console.log(err);
         // If an error occurred, also notify the user
 //      alert(JSON.stringify(err, undefined, 2));
       })
   });
+
 }
+
 
 function scrollToAnchor(aid) {
   const aTag = $("a[name='" + aid + "']");
-  $('html,body').animate({scrollTop:aTag.offset().top}, 'slow');
+//  $('html,body').animate({scrollTop:aTag.offset().top}, 'slow');
+  $('html').animate({scrollTop:aTag.offset().top}, 'slow');
 }
